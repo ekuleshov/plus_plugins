@@ -136,6 +136,12 @@ class ShareParams {
   ///   Parameter ignored on other platforms.
   final bool mailToFallbackEnabled;
 
+  /// Whether to open a file/document selection UI to save files instead of sharing.
+  ///
+  /// * Supported platforms: Android, iOS, macOS
+  ///   Parameter ignored on other platforms.
+  final bool saveFiles;
+
   ShareParams({
     this.text,
     this.subject,
@@ -147,6 +153,7 @@ class ShareParams {
     this.fileNameOverrides,
     this.downloadFallbackEnabled = true,
     this.mailToFallbackEnabled = true,
+    this.saveFiles = false, // Default to false to maintain backward compatibility
   });
 }
 

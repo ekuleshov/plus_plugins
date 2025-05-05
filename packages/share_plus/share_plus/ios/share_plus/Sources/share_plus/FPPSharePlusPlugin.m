@@ -340,6 +340,27 @@ TopViewControllerForViewController(UIViewController *viewController) {
       UIViewController *topViewController =
           TopViewControllerForViewController(rootViewController);
 
+      if ([arguments[@"saveFiles"] boolValue]) {
+        NSArray *paths = arguments[@"paths"];
+        if (!paths || paths.count == 0) {
+            result([FlutterError errorWithCode:@"error"
+                                       message:@"No files provided for saving"
+                                       details:nil]);
+            return;
+        }
+
+        NSString *fileName = [paths.firstObject lastPathComponent];
+        UIDocumentPickerViewController *documentPicker =
+            [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@["public.data"]
+                                                                   inMode:UIDocumentPickerModeExportToService];
+        documentPicker.delegate = self;
+        documentPicker.modalPresentationStyle = UIModalPresentationFormSheet;
+
+        UIViewController *rootViewController = RootViewController();
+        [rootViewController presentViewController:documentPicker animated:YES completion:nil];
+        return;
+      }
+
       if (uri) {
         [self shareUri:uri
             withController:topViewController

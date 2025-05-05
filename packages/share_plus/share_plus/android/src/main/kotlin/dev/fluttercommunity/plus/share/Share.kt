@@ -59,6 +59,28 @@ internal class Share(
     fun share(arguments: Map<String, Any>, withResult: Boolean) {
         clearShareCacheFolder()
 
+        val saveFiles = arguments["saveFiles"] as Boolean? ?: false
+        if (saveFiles) {
+            val paths = (arguments["paths"] as List<*>?)?.filterIsInstance<String>()
+            if (paths.isNullOrEmpty()) {
+                throw IOException("Error saving files: No files provided")
+            }
+
+            val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "*/*"
+                putExtra(Intent.EXTRA_TITLE, File(paths.first()).name)
+            }
+
+            if (activity != null) {
+                activity!!.startActivityForResult(intent, ShareSuccessManager.ACTIVITY_CODE)
+            } else {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(intent)
+            }
+            return
+        }
+
         val text = arguments["text"] as String?
         val uri = arguments["uri"] as String?
         val subject = arguments["subject"] as String?
